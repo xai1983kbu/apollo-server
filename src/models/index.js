@@ -1,4 +1,13 @@
+import winston from 'winston'
 import Sequelize from 'sequelize'
+
+const logger = winston.createLogger({
+  level: 'info',
+  transports: [
+    new winston.transports.Console(),
+    new winston.transports.File({ filename: 'sql.log' })
+  ]
+})
 
 const sequelize = new Sequelize(
   process.env.DATABASE,
@@ -8,7 +17,8 @@ const sequelize = new Sequelize(
     dialect: 'postgres',
     define: {
       underscored: true // for purpose of snake_case in names of fields in db, teamId goes to team_id (postgres naming convention)
-    }
+    },
+    logging: msg => logger.info(msg)
   }
 )
 

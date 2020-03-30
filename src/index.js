@@ -15,7 +15,8 @@ const server = new ApolloServer({
   // The function is invoked every time a request hits your GraphQL API, so the me user is retrieved from the database with every request.
   context: async () => ({
     models,
-    me: models.Users.findByLogin('SAndriy')
+    // me: models.User.findByLogin('SAndriy')
+    me: { username: 'SAndriy', id: 1 }
   })
 })
 
