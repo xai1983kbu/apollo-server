@@ -1,62 +1,46 @@
 import uuidv4 from 'uuid/v4'
+import user from './../models/user'
 
 export default {
   Query: {
-    messages: (parent, args, { models }) => {
-      return Object.values(models.messages)
+    messages: async (parent, args, { models }) => {
+      return await models.Message.findAll()
     },
-    message: (parent, { id }, { models }) => {
-      return models.messages[id]
+    message: async (parent, { id }, { models }) => {
+      return await models.Message.findByPk(id)
     }
   },
 
   Mutation: {
-    createMessage: (parent, { text }, { me, models }) => {
-      const id = uuidv4()
-      const message = {
-        id,
+    createMessage: async (parent, { text }, { me, models }) => {
+      return await models.Message.create({
         text,
         userId: me.id
-      }
-
-      models.messages[id] = message
-      models.users[me.id].messageId.push(id)
-
-      return message
+      })
     },
 
-    deleteMessage: (parent, { id }, { models }) => {
-      // The resolver finds the message by id from the messages object using destructuring.
-      const { [id]: message, ...otherMessages } = models.messages
-
-      if (!message) {
-        return false
-      }
-
-      models.messages = otherMessages
-
-      return true
+    deleteMessage: async (parent, { id }, { models }) => {
+      return await models.Message.destroy({
+        where: { id }
+      })
     },
 
-    updateMessage: (parent, { id, newText }, { models }) => {
-      const { [id]: oldMessage, ...otherMessages } = models.messages
-
-      if (oldMessage) {
-        const newMessage = {
-          id,
-          text: newText
-        }
-        models.messages = otherMessages
-        models.messages[id] = newMessage
-        return newMessage
+    updateMessage: async (parent, { id, newText }, { models }) => {
+      try {
+        const result = await models.Message.update(
+          { text: newText },
+          { where: { id } }
+        )
+        return result
+      } catch (err) {
+        return null
       }
-      return
     }
   },
 
   Message: {
-    user: (message, args, { models }) => {
-      return models.users[message.userId]
+    user: async (message, args, { models }) => {
+      return await models.User.findByPk(message.userId)
     }
   }
 }
