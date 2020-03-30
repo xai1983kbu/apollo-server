@@ -18,7 +18,9 @@ const sequelize = new Sequelize(
     define: {
       underscored: true // for purpose of snake_case in names of fields in db, teamId goes to team_id (postgres naming convention)
     },
-    logging: msg => logger.info(msg)
+    logging: msg => logger.info(msg),
+    // Set to false to make table names and attributes case-insensitive on Postgres and skip double quoting of them. WARNING: Setting this to false may expose vulnerabilities and is not recommended!
+    quoteIdentifiers: false
   }
 )
 
