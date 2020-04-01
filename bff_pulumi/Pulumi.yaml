@@ -1,0 +1,3 @@
+name: bff_pulumi
+runtime: nodejs
+description: A minimal AWS JavaScript Pulumi program

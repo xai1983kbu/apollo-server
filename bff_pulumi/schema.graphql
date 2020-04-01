@@ -1,0 +1,37 @@
+schema { 
+  query: Query 
+  mutation: Mutation 
+  subscription: Subscription  
+}
+
+type Message {
+  id: ID!
+  text: String!
+  user: User!
+}
+
+type Mutation {
+  _: Boolean
+  createMessage(text: String!): Message!
+  deleteMessage(id: ID!): Boolean!
+  updateMessage(id: ID!, newText: String!): Message
+}
+
+type Query {
+  _: Boolean
+  messages: [Message!]!
+  message(id: ID!): Message!
+  users: [User!]
+  me: User
+  user(id: ID!): User
+}
+
+type Subscription {
+  _: Boolean
+}
+
+type User {
+  id: ID!
+  username: String!
+  messages: [Message!]
+}
