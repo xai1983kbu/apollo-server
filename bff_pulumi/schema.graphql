@@ -34,4 +34,5 @@ type User {
   id: ID!
   username: String!
   messages: [Message!]
+  pool_username: String
 }

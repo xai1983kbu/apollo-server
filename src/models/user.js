@@ -2,6 +2,9 @@ const user = (sequilize, DataTypes) => {
   const User = sequilize.define('user', {
     username: {
       type: DataTypes.STRING
+    },
+    pool_username: {
+      type: DataTypes.STRING
     }
   })
 

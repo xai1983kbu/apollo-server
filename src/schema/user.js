@@ -10,6 +10,7 @@ export default gql`
   type User {
     id: ID!
     username: String!
+    pool_username: String
     messages: [Message!]
   }
 `

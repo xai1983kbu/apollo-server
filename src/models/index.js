@@ -4,7 +4,7 @@ import Sequelize from 'sequelize'
 const logger = winston.createLogger({
   level: 'info',
   transports: [
-    new winston.transports.Console(),
+    // new winston.transports.Console(),
     new winston.transports.File({ filename: 'sql.log' })
   ]
 })

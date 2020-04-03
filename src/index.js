@@ -38,6 +38,7 @@ const createUsersWithMessages = async () => {
   await models.User.create(
     {
       username: 'SAndriy',
+      pool_username: 'a78ae572-abe7-42b2-9f9d-eb5f3b9a3619',
       messages: [
         {
           text: 'First Message from SAndriy'
@@ -55,6 +56,7 @@ const createUsersWithMessages = async () => {
   await models.User.create(
     {
       username: 'Mario',
+      pool_username: 'c788df2f-9ec0-4210-af02-34ed1c207e50',
       messages: [
         {
           text: 'First message from Mario'

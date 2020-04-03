@@ -3,3 +3,4 @@
 sql.log
 /bff_pulumi/node_modules
 /bff_pulumi/secret.js
+/bff_pulumi/temp.graphql

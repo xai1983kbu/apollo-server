@@ -65,3 +65,69 @@ We have to create the database manually via Query Editor in Appsync page or auto
 
 For more details how we can connect to our cluster via Cloud9 service in link below
 https://aws.amazon.com/getting-started/hands-on/configure-connect-serverless-mysql-database-aurora/
+
+---
+
+# Using pulumi to supply resolvers to AppSync
+
+We can add resolvers to AWS AppSync using AWS Console but we need to track changes for our resolvers(in Github for example), for that reason we will use @wesselsbernd method described in his super article on medium https://medium.com/@wesselsbernd/bff-back-end-for-front-end-architecture-as-of-may-2019-5d09b913a8ed
+
+In folder /bff_pulumi we will create /graphql/resolvers/ folder where our resolvers will reside.
+The pattern of the naming resolver file is next --> `Type.property.js`
+First part of name is Type. It can be any type listed in schema.graphql such as Query, User, and so on.
+The second part of the name is Property. It can be any property inside any type listed in schema.graphql such as me, message, messages (for type Query), messages (for type User) so on.
+
+Description of two next resolvers:
+####Query.message.js
+####Query.messages.js
+you can find in my answer on StackOverflow https://stackoverflow.com/a/60987863/9783262
+
+####Query.me.js
+resolver in its request template(below) uses \$context.indentity in order to find username info from request
+
+```json
+{
+  "version": "2018-05-29",
+  "statements": [
+    "select * from user where pool_username='$context.identity.username';"
+  ]
+}
+```
+
+In this template \$context.identity - an object that contains information about the caller.
+
+####User.messages.js
+resolver in its request template(below)
+
+```json
+{
+  "version": "2018-05-29",
+  "statements": ["select * from message where userId = '$context.source.id';"]
+}
+```
+
+In this template \$context.source - a map that contains the resolution of the parent field.
+In schema.graphql we have
+
+```json
+type User {
+	id: ID!
+	username: String!
+	messages: [Message!]
+	pool_username: String
+}
+type Query {
+	users: [User!]
+	me: User
+	user(id: ID!): User
+}
+```
+
+Resolvers for Query properties user, me and user doesn't return the result for property `messages: [Message!]`
+they only return `id, username, pool_username` (take a look at its request templates' SQL query).
+The result for `messages: [Message!]` will be returned from resolver for type `User` property `messages` (take a look at request templates' SQL query in User.messages.js).
+\$context.source contains { id, username, pool_usermape } - object with parent fields.
+
+About context in links below:
+https://docs.aws.amazon.com/appsync/latest/devguide/resolver-context-reference.html
+https://docs.aws.amazon.com/appsync/latest/devguide/resolver-context-reference.html#aws-appsync-resolver-context-reference-identity
